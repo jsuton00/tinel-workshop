@@ -1,0 +1,40 @@
+.header {
+	background-color: #ffce25;
+	width: 100%;
+	min-height: 5.625rem;
+	height: 5.625rem;
+	max-height: 5.625rem;
+}
+
+.header-nav {
+	justify-content: space-between;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+	padding: 0.25rem 0.5rem;
+}
+
+.nav-item {
+	flex-basis: 22%;
+	width: 100%;
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	padding: 0.25rem;
+}
+
+.brand-logo {
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	height: 100%;
+}
+
+.cart-button-section {
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+}
