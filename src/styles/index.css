@@ -16,8 +16,10 @@ body,
 	padding: 0;
 	width: 100%;
 	height: 100%;
+	overflow-x: hidden;
 	font-family: 'Livvic', sans-serif;
 	font-size: 1rem;
+	color: #1d1d18;
 }
 
 header,

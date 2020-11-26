@@ -1,0 +1,62 @@
+.workshops-listing-page {
+	width: 100%;
+	height: calc(100% - 14.4vh);
+}
+
+.workshops-listing-container {
+	justify-content: space-around;
+	align-items: stretch;
+	width: 100%;
+	height: 100%;
+	padding: 0.5rem 2rem 0.5rem;
+}
+
+.workshops-listing-col {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	height: 100%;
+}
+
+.filter-section {
+	flex-basis: 24%;
+	width: 100%;
+	padding: 0.25rem;
+}
+
+.card-section {
+	flex-basis: 72%;
+	width: 100%;
+	padding: 0.25rem;
+}
+
+.workshops-filter-container {
+	justify-content: center;
+	align-items: center;
+	width: 100%;
+	padding: 0.5rem 1rem 0.5rem;
+}
+
+.workshops-listing-heading {
+	align-items: center;
+	width: 100%;
+	padding: 0.75rem 1rem 0.5rem;
+	font-size: 1.75rem;
+	font-weight: 700;
+}
+
+.workshops-listings-total {
+	align-items: center;
+	width: 100%;
+	padding: 0.25rem 1rem;
+	font-size: 1.25rem;
+	font-weight: 700;
+	color: #7f7f7f;
+}
+
+.workshops-card-deck {
+	justify-content: space-around;
+	align-items: center;
+	width: 100%;
+	padding: 0.25rem 0.5rem;
+}
