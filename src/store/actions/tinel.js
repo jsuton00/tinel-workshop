@@ -39,6 +39,35 @@ export const fetchCategoriesSuccess = (categories) => ({
 	categories,
 });
 
+export const filterCategory = (category) => ({
+	type: actionTypes.FILTER_CATEGORY,
+	category,
+});
+
+export const fetchWorkshop = (workshopId) => ({
+	type: actionTypes.FETCH_WORKSHOP,
+	workshopId,
+});
+
+export const fetchWorkshopFail = () => ({
+	type: actionTypes.FETCH_WORKSHOP_FAIL,
+});
+
+export const fetchWorkshopSuccess = (workshop) => ({
+	type: actionTypes.FETCH_WORKSHOP_SUCCESS,
+	workshop,
+});
+
+export const addToCart = (workshopId) => ({
+	type: actionTypes.ADD_TO_CART,
+	workshopId,
+});
+
+export const removeFromCart = (workshopId) => ({
+	type: actionTypes.REMOVE_FROM_CART,
+	workshopId,
+});
+
 export const loadingWorkshops = () => ({
 	type: actionTypes.LOADING_WORKSHOPS,
 });
@@ -49,4 +78,8 @@ export const loadingUsers = () => ({
 
 export const loadingCategories = () => ({
 	type: actionTypes.LOADING_CATEGORIES,
+});
+
+export const loadingWorkshop = () => ({
+	type: actionTypes.LOADING_WORKSHOP,
 });

@@ -1,26 +1,44 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { categoriesList } from '../utils/categoriesList';
 import * as actions from '../store/actions/index';
-import '../styles/components/filterCategories.css';
 import FilterItem from './FilterItem';
+import { categoriesList } from '../utils/categoriesList';
+import '../styles/components/filterCategories.css';
 
 export default function FilterCategories() {
+	const filterCategoriesRef = useRef();
 	const dispatch = useDispatch();
 	const categories = useSelector((state) => state.categories);
+	const filterCategory = useSelector((state) => state.selectedCategory);
 	console.log(categories && categories);
 
 	useEffect(() => {
-		const timer = setTimeout(() => dispatch(actions.fetchCategories()));
+		const timerFetchCategories = setTimeout(() => {
+			dispatch(actions.fetchCategories());
+		});
+
+		const timerFilterCategories = setTimeout(() => {
+			if (filterCategory === filterCategoriesRef.current.value) {
+				dispatch(actions.filterCategory(filterCategory));
+			}
+		}, 500);
+
 		return () => {
-			clearTimeout(timer);
+			clearTimeout(timerFetchCategories);
+			clearTimeout(timerFilterCategories);
 		};
-	}, [dispatch]);
+	}, [dispatch, filterCategory]);
 	return (
-		<div className="filter-categories-list list-group">
+		<div
+			ref={filterCategoriesRef}
+			className="filter-categories-list list-group"
+		>
 			<div
+				ref={filterCategoriesRef}
 				className="filter-category default-category row"
+				onClick={(e) => dispatch(actions.filterCategory(e.target.value))}
 				value={categoriesList[0]}
+				role="button"
 			>
 				<p className="filter-category-text default-category-text">
 					{categoriesList[0]}
@@ -31,9 +49,11 @@ export default function FilterCategories() {
 					.map((category, index) => {
 						return (
 							<FilterItem
+								ref={filterCategoriesRef}
 								key={index}
 								categoryValue={category}
 								categoryText={category}
+								clickCategory={() => dispatch(actions.filterCategory(category))}
 							/>
 						);
 					})

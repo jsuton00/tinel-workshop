@@ -5,7 +5,11 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
 	workshops: [],
 	filteredWorkshops: [],
+	workshop: '',
+	selectedWorkshop: '',
 	users: [],
+	selectedUsers: [],
+	user: '',
 	categories: [],
 	selectedCategory: categoriesList[0],
 	loadingWorkshops: false,
@@ -14,8 +18,10 @@ const initialState = {
 	errorFetchingWorkshops: false,
 	errorFetchingUsers: false,
 	errorFetchingCategories: false,
+	errorFetchingWorkshop: false,
 };
 
+/** FETCH WORKSHOPS START */
 const setLoadingWorkshops = (state, action) => {
 	return updateObject(state, { loadingWorkshops: true });
 };
@@ -35,7 +41,9 @@ const fetchWorkshopsSuccess = (state, action) => {
 		filteredWorkshops: action.workshops,
 	});
 };
+/** FETCH WORKSHOPS END */
 
+/** FETCH CATEGORIES START */
 const setLoadingCategories = (state, action) => {
 	return updateObject(state, { loadingCategories: true });
 };
@@ -54,6 +62,79 @@ const fetchCategoriesSuccess = (state, action) => {
 		categories: action.categories,
 	});
 };
+/** FETCH CATEGORIES END */
+
+/** FETCH USERS START */
+const fetchUsersFail = (state, action) => {
+	return updateObject(state, {
+		loadingUsers: false,
+		errorFetchingUsers: true,
+	});
+};
+
+const fetchUsersSuccess = (state, action) => {
+	return updateObject(state, {
+		loadingUsers: false,
+		errorFetchingUsers: false,
+		users: action.users,
+		selectedUsers: action.users,
+	});
+};
+/** FETCH USERS END */
+
+/** FILTER CATEGORY START */
+const filterCategory = (state, action) => {
+	let filterCategory = action.category;
+	let categoryWorkshops;
+
+	if (filterCategory) {
+		categoryWorkshops = state.workshops.filter(
+			(w) => w.category === filterCategory.toLowerCase(),
+		);
+	} else {
+		categoryWorkshops = state.workshops;
+	}
+
+	return updateObject(state, {
+		filteredWorkshops: categoryWorkshops,
+		selectedCategory: action.category,
+		loadingWorkshops: false,
+	});
+};
+/** FILTER CATEGORY END */
+
+/** FETCH WORKSHOP START */
+const fetchWorkshopFail = (state, action) => {
+	return updateObject(state, {
+		loadingWorkshop: false,
+		errorFetchingWorkshop: true,
+	});
+};
+
+const fetchWorkshopSuccess = (state, action) => {
+	return updateObject(state, {
+		loadingWorkshop: false,
+		errorFetchingWorkshop: false,
+		workshop: action.workshop,
+		selectedWorkshop: action.workshop,
+	});
+};
+
+/** FETCH WORKSHOP END */
+
+const addToCart = (state, action) => {
+	let selectedWorkshop = action.workshopId;
+	let cartList;
+
+	if (selectedWorkshop) {
+		cartList = state.workshops.find((w) => w.id === selectedWorkshop);
+	}
+
+	return updateObject(state, {
+		cartList: cartList,
+		selectedWorkshop: selectedWorkshop,
+	});
+};
 
 const reducer = (state = initialState, action) => {
 	switch (action.type) {
@@ -65,6 +146,18 @@ const reducer = (state = initialState, action) => {
 			return fetchCategoriesFail(state, action);
 		case actionTypes.FETCH_CATEGORIES_SUCCESS:
 			return fetchCategoriesSuccess(state, action);
+		case actionTypes.FETCH_USERS_FAIL:
+			return fetchUsersFail(state, action);
+		case actionTypes.FETCH_USERS_SUCCESS:
+			return fetchUsersSuccess(state, action);
+		case actionTypes.FILTER_CATEGORY:
+			return filterCategory(state, action);
+		case actionTypes.FETCH_WORKSHOP_FAIL:
+			return fetchWorkshopFail(state, action);
+		case actionTypes.FETCH_WORKSHOP_SUCCESS:
+			return fetchWorkshopSuccess(state, action);
+		case actionTypes.ADD_TO_CART:
+			return addToCart(state, action);
 		case actionTypes.LOADING_WORKSHOPS:
 			return setLoadingWorkshops(state, action);
 		case actionTypes.LOADING_CATEGORIES:

@@ -67,6 +67,10 @@ li {
 	list-style: none;
 }
 
-a:hover {
+a,
+a:hover,
+a:focus,
+a:active {
+	color: #1d1d18;
 	text-decoration: none;
 }

@@ -31,3 +31,16 @@ export function* fetchCategoriesSaga(action) {
 		yield put(actions.fetchCategoriesFail());
 	}
 }
+
+export function* fetchWorkshopSaga(action) {
+	try {
+		yield put(actions.loadingWorkshop());
+		let response;
+		if (action.workshopId) {
+			response = yield call(api.fetchWorkshop, action.workshopId);
+		}
+		yield put(actions.fetchWorkshopSuccess(response.data));
+	} catch (err) {
+		yield put(actions.fetchWorkshopFail());
+	}
+}

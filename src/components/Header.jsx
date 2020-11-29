@@ -1,9 +1,11 @@
 import React from 'react';
+import { useSelector } from 'react-redux';
 import { CartButton } from './CartButton';
 import { TinelLogo } from './Images';
 import '../styles/components/header.css';
 
 export default function Header() {
+	const cartList = useSelector((state) => state.cartList);
 	return (
 		<header id="header" className="header container-fluid">
 			<nav className="nav header-nav row">
@@ -14,7 +16,7 @@ export default function Header() {
 				</div>
 				<div className="nav-item cart-item">
 					<div className="cart-button-section row">
-						<CartButton />
+						<CartButton cartList={cartList && cartList} />
 					</div>
 				</div>
 			</nav>
