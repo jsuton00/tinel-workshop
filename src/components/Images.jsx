@@ -22,6 +22,11 @@ export const CardCategoryIcon = (props) => {
 	return <img src={imgSrc} alt={altName} />;
 };
 
+export const DetailBannerImage = (props) => {
+	const { imgSrc, altName } = props;
+	return <img src={imgSrc} alt={altName} />;
+};
+
 export const FilterCategoryIcon = (props) => {
 	const { imgSrc, altText } = props;
 	return <img src={imgSrc} alt={altText} />;

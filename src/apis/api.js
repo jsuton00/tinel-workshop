@@ -19,3 +19,7 @@ export const postOutput = async () => {
 export const fetchWorkshop = async (id) => {
 	return await axios.get(`http://localhost:5000/workshops/${id}`);
 };
+
+export const fetchUser = async (id) => {
+	return await axios.get(`http://localhost:5000/users/${id}`);
+};

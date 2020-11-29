@@ -44,3 +44,16 @@ export function* fetchWorkshopSaga(action) {
 		yield put(actions.fetchWorkshopFail());
 	}
 }
+
+export function* fetchUserSaga(action) {
+	try {
+		yield put(actions.loadingUsers());
+		let response;
+		if (action.userId) {
+			response = yield call(api.fetchUser, action.userId);
+		}
+		yield put(actions.fetchUserSuccess(response.data));
+	} catch (err) {
+		yield put(actions.fetchUserFail());
+	}
+}

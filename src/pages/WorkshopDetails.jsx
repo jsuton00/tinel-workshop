@@ -1,27 +1,74 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import BookingForm from '../components/BookingForm';
+import { DetailBannerImage } from '../components/Images';
+import WorkshopArticle from '../components/WorkshopArticle';
 import * as actions from '../store/actions/index';
+import '../styles/pages/workshopDetails.css';
 
 const WorkshopDetails = (props) => {
 	let { location } = props;
 	const dispatch = useDispatch();
 	const workshop = useSelector((state) => state.selectedWorkshop);
-	const users = useSelector((state) => state.selectedUsers);
+	const selectedUser = useSelector((state) => state.selectedUser);
 	let workshopId = location.workshopId;
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
 			dispatch(actions.fetchWorkshop(workshopId));
-			dispatch(actions.fetchUsers());
+			if (workshop) {
+				dispatch(actions.fetchUser(workshop.userId));
+			}
 		}, 100);
 		return () => {
 			clearTimeout(timer);
 		};
-	}, [dispatch, workshopId]);
+	}, [dispatch, workshop, workshopId]);
 
-	console.log(workshop && workshop);
-	console.log(users && users);
-	return <div></div>;
+	return (
+		<div
+			id="workshop-details-page"
+			className="workshop-details container-fluid"
+		>
+			<div className="workshop-details-container row">
+				<div className="workshop-details-col return-section">
+					<div className="return-button-container row">
+						<button
+							id="return-button"
+							name="return-button"
+							type="button"
+							className="return-button"
+						>
+							Return
+						</button>
+					</div>
+				</div>
+				<div className="workshop-details-col workshop-article-section">
+					<div className="workshop-article-image-container row">
+						{workshop && (
+							<DetailBannerImage
+								imgSrc={workshop.imageUrl}
+								altName={workshop.title}
+							/>
+						)}
+					</div>
+					<div className="article-section-row row">
+						{workshop && (
+							<WorkshopArticle
+								id={workshop.id}
+								title={workshop.title}
+								user={selectedUser}
+								description={workshop.desc}
+								category={workshop.category}
+								date={workshop.date}
+							/>
+						)}
+						{workshop && <BookingForm price={workshop.price} />}
+					</div>
+				</div>
+			</div>
+		</div>
+	);
 };
 
 export default WorkshopDetails;

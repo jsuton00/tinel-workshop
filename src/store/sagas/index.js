@@ -5,6 +5,7 @@ import {
 	fetchWorkshopsSaga,
 	fetchCategoriesSaga,
 	fetchWorkshopSaga,
+	fetchUserSaga,
 } from './tinelSagas';
 
 export function* watchTinel() {
@@ -13,5 +14,6 @@ export function* watchTinel() {
 		takeLatest(actionTypes.FETCH_USERS, fetchUsersSaga),
 		takeEvery(actionTypes.FETCH_CATEGORIES, fetchCategoriesSaga),
 		takeEvery(actionTypes.FETCH_WORKSHOP, fetchWorkshopSaga),
+		takeLatest(actionTypes.FETCH_USER, fetchUserSaga),
 	]);
 }

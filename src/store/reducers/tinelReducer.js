@@ -10,6 +10,7 @@ const initialState = {
 	users: [],
 	selectedUsers: [],
 	user: '',
+	selectedUser: '',
 	categories: [],
 	selectedCategory: categoriesList[0],
 	loadingWorkshops: false,
@@ -119,8 +120,22 @@ const fetchWorkshopSuccess = (state, action) => {
 		selectedWorkshop: action.workshop,
 	});
 };
-
 /** FETCH WORKSHOP END */
+const fetchUserFail = (state, action) => {
+	return updateObject(state, {
+		loadingUsers: false,
+		errorFetchingUsers: false,
+	});
+};
+
+const fetchUserSuccess = (state, action) => {
+	return updateObject(state, {
+		user: action.user,
+		selectedUser: action.user,
+		loadingUsers: false,
+		errorFetchingUsers: false,
+	});
+};
 
 const addToCart = (state, action) => {
 	let selectedWorkshop = action.workshopId;
@@ -156,6 +171,10 @@ const reducer = (state = initialState, action) => {
 			return fetchWorkshopFail(state, action);
 		case actionTypes.FETCH_WORKSHOP_SUCCESS:
 			return fetchWorkshopSuccess(state, action);
+		case actionTypes.FETCH_USER_FAIL:
+			return fetchUserFail(state, action);
+		case actionTypes.FETCH_USER_SUCCESS:
+			return fetchUserSuccess(state, action);
 		case actionTypes.ADD_TO_CART:
 			return addToCart(state, action);
 		case actionTypes.LOADING_WORKSHOPS:

@@ -58,6 +58,20 @@ export const fetchWorkshopSuccess = (workshop) => ({
 	workshop,
 });
 
+export const fetchUser = (userId) => ({
+	type: actionTypes.FETCH_USER,
+	userId,
+});
+
+export const fetchUserFail = () => ({
+	type: actionTypes.FETCH_USER_FAIL,
+});
+
+export const fetchUserSuccess = (user) => ({
+	type: actionTypes.FETCH_USER_SUCCESS,
+	user,
+});
+
 export const addToCart = (workshopId) => ({
 	type: actionTypes.ADD_TO_CART,
 	workshopId,
