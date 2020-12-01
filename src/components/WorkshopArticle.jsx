@@ -26,7 +26,12 @@ export default function WorkshopArticle(props) {
 					{`${formatTime(date)}`}
 				</p>
 				<h3 className="workshop-article-title row">{title}</h3>
-				{user && <p className="workshop-article-user row">{user.name}</p>}
+				{user && (
+					<p className="workshop-article-user row">
+						<span className="with-user">with</span>
+						{user.name}
+					</p>
+				)}
 				<p className="workshop-article-description row">{description}</p>
 			</div>
 		</div>

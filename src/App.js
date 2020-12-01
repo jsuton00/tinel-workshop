@@ -1,7 +1,7 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Switch } from 'react-router-dom';
+import { Route, Switch } from 'react-router-dom';
 import Header from './components/Header';
-import CartInterface from './pages/CartInterface';
+import ShoppingCart from './pages/CartInterface';
 import CheckoutPage from './pages/CheckoutPage';
 import ThankYouPage from './pages/ThankYouPage';
 import WorkshopDetails from './pages/WorkshopDetails';
@@ -12,15 +12,13 @@ function App() {
 		<div id="app" className="app">
 			<Header />
 			<main id="main" className="main container-fluid">
-				<Router>
-					<Switch>
-						<Route exact path="/" component={WorkshopsListing} />
-						<Route path="/workshop/:id" component={WorkshopDetails} />
-						<Route exact path="/cart" component={CartInterface} />
-						<Route exact path="/checkout" component={CheckoutPage} />
-						<Route exact path="/thank-you" component={ThankYouPage} />
-					</Switch>
-				</Router>
+				<Switch>
+					<Route exact path="/" component={WorkshopsListing} />
+					<Route path="/workshop/:id" component={WorkshopDetails} />
+					<Route exact path="/cart" component={ShoppingCart} />
+					<Route exact path="/checkout" component={CheckoutPage} />
+					<Route exact path="/thank-you" component={ThankYouPage} />
+				</Switch>
 			</main>
 		</div>
 	);

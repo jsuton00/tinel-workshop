@@ -12,8 +12,15 @@ export const fetchCategories = async () => {
 	return await axios.get('http://localhost:5000/categories');
 };
 
-export const postOutput = async () => {
-	return await axios.post('http://localhost:5000/output');
+export const fetchOrders = async () => {
+	return await axios.get('http://localhost:5000/orders');
+};
+
+export const postOrders = async (workshop, quantity, total) => {
+	return await axios.post('http://localhost:5000/orders', {
+		products: [{ ...workshop, quantity }],
+		total: total,
+	});
 };
 
 export const fetchWorkshop = async (id) => {

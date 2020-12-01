@@ -1,4 +1,5 @@
 import { categoriesList } from '../../utils/categoriesList';
+import { inputNumberList } from '../../utils/inputNumberList';
 import { updateObject } from '../../utils/reduxUtils';
 import * as actionTypes from '../actions/actionTypes';
 
@@ -11,8 +12,17 @@ const initialState = {
 	selectedUsers: [],
 	user: '',
 	selectedUser: '',
+	numValue: inputNumberList[0],
+	price: 0,
+	selectedNum: 0,
+	subtotal: 0,
 	categories: [],
 	selectedCategory: categoriesList[0],
+	products: [],
+	quantity: 0,
+	total: 0,
+	updatedProducts: [],
+	updatedTotal: 0,
 	loadingWorkshops: false,
 	loadingUsers: false,
 	loadingCategories: false,
@@ -137,18 +147,75 @@ const fetchUserSuccess = (state, action) => {
 	});
 };
 
-const addToCart = (state, action) => {
-	let selectedWorkshop = action.workshopId;
-	let cartList;
+const selectNumberOfTickets = (state, action) => {
+	let inputNumberValue = Number(action.numValue);
+	let workshop = state.workshop;
+	let price;
+	let subtotal;
 
-	if (selectedWorkshop) {
-		cartList = state.workshops.find((w) => w.id === selectedWorkshop);
+	if (workshop) {
+		price = workshop.price;
+		if (inputNumberValue) {
+			subtotal = price * inputNumberValue;
+		} else {
+			subtotal = '';
+		}
 	}
 
 	return updateObject(state, {
-		cartList: cartList,
-		selectedWorkshop: selectedWorkshop,
+		selectedNum: inputNumberValue,
+		subtotal: Number(subtotal).toFixed(2),
+		price: price,
 	});
+};
+
+const addToCart = (state, action) => {
+	let selectedWorkshopId = action.workshopId;
+	let workshops = state.workshops;
+	let workshop;
+	let existingWorkshop;
+	let product;
+	let quantity = state.selectedNum;
+	let productList = [];
+	let sumTotal = 0;
+	let total = 0;
+
+	if (workshops) {
+		if (quantity === '') {
+			quantity = 1;
+			if (selectedWorkshopId) {
+				workshop = workshops.find((w) => w.id === selectedWorkshopId);
+				product = Object.assign(workshop, { quantity: quantity });
+				productList.push(product);
+				sumTotal = productList.reduce((sum, product) => {
+					return sum + product.price * product.quantity;
+				}, state.total);
+			}
+			return updateObject(state, {
+				products: productList,
+				total: sumTotal,
+			});
+		} else if (quantity >= 1) {
+			if (selectedWorkshopId) {
+				workshop = workshops.find((w) => w.id === selectedWorkshopId);
+				product = Object.assign(workshop, { quantity: quantity });
+				productList.push(product);
+				sumTotal = productList.reduce((sum, product) => {
+					return sum + product.price * product.quantity;
+				}, state.total);
+			}
+		} else {
+			existingWorkshop = workshops.find((w) => w.id === selectedWorkshopId);
+			do {
+				workshop = workshops.find((w) => w.id === selectedWorkshopId);
+				quantity = quantity + 1;
+				product = Object.assign(workshop, { quantity: quantity });
+				if (workshop !== existingWorkshop) {
+					workshop = workshops.find((w) => w.id === selectedWorkshopId);
+				}
+			} while (selectedWorkshopId);
+		}
+	}
 };
 
 const reducer = (state = initialState, action) => {
@@ -175,8 +242,8 @@ const reducer = (state = initialState, action) => {
 			return fetchUserFail(state, action);
 		case actionTypes.FETCH_USER_SUCCESS:
 			return fetchUserSuccess(state, action);
-		case actionTypes.ADD_TO_CART:
-			return addToCart(state, action);
+		case actionTypes.SELECT_NUMBER_OF_TICKETS:
+			return selectNumberOfTickets(state, action);
 		case actionTypes.LOADING_WORKSHOPS:
 			return setLoadingWorkshops(state, action);
 		case actionTypes.LOADING_CATEGORIES:

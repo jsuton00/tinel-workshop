@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import { CartButton } from './CartButton';
 import { TinelLogo } from './Images';
 import '../styles/components/header.css';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
 	const cartList = useSelector((state) => state.cartList);
@@ -11,7 +12,9 @@ export default function Header() {
 			<nav className="nav header-nav row">
 				<div className="nav-item brand-item">
 					<div className="brand-logo row">
-						<TinelLogo />
+						<Link to="/">
+							<TinelLogo />
+						</Link>
 					</div>
 				</div>
 				<div className="nav-item cart-item">

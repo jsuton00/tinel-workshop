@@ -4,10 +4,13 @@ import BookingForm from '../components/BookingForm';
 import { DetailBannerImage } from '../components/Images';
 import WorkshopArticle from '../components/WorkshopArticle';
 import * as actions from '../store/actions/index';
+import { FaLongArrowAltLeft } from 'react-icons/fa';
 import '../styles/pages/workshopDetails.css';
+import { useHistory } from 'react-router';
 
 const WorkshopDetails = (props) => {
 	let { location } = props;
+	let history = useHistory();
 	const dispatch = useDispatch();
 	const workshop = useSelector((state) => state.selectedWorkshop);
 	const selectedUser = useSelector((state) => state.selectedUser);
@@ -38,7 +41,11 @@ const WorkshopDetails = (props) => {
 							name="return-button"
 							type="button"
 							className="return-button"
+							onClick={(e) => history.push('/')}
 						>
+							<span className="return-icon">
+								<FaLongArrowAltLeft />
+							</span>
 							Return
 						</button>
 					</div>

@@ -1,5 +1,5 @@
 import React from 'react';
 
-export default function CartInterface() {
-	return <div>CartInterface</div>;
+export default function ShoppingCart() {
+	return <div id="cart-list">CartInterface</div>;
 }

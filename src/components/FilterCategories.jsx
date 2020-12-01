@@ -33,6 +33,7 @@ export default function FilterCategories() {
 			ref={filterCategoriesRef}
 			className="filter-categories-list list-group"
 		>
+			<h5 className="filter-category-title row">Filter by Category:</h5>
 			<div
 				ref={filterCategoriesRef}
 				className="filter-category default-category row"

@@ -61,6 +61,21 @@
 	color: #0097cc;
 }
 
+.workshop-article-user {
+	align-items: baseline;
+	width: 100%;
+	font-size: 1.125rem;
+	padding: 0.25rem;
+	font-weight: 700;
+}
+
+.with-user {
+	display: inline-block;
+	font-size: 0.9875rem;
+	margin-right: 0.25rem;
+	text-transform: uppercase;
+}
+
 .workshop-article-description {
 	align-items: center;
 	width: 100%;

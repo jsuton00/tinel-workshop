@@ -72,9 +72,41 @@ export const fetchUserSuccess = (user) => ({
 	user,
 });
 
+export const selectNumberOfTickets = (numValue) => ({
+	type: actionTypes.SELECT_NUMBER_OF_TICKETS,
+	numValue,
+});
+
 export const addToCart = (workshopId) => ({
 	type: actionTypes.ADD_TO_CART,
 	workshopId,
+});
+
+export const postOrders = (products, total) => ({
+	type: actionTypes.POST_ORDERS,
+	products,
+	total,
+});
+
+export const postOrdersFail = () => ({
+	type: actionTypes.POST_ORDERS_FAIL,
+});
+
+export const postOrdersSuccess = () => ({
+	type: actionTypes.POST_ORDERS_SUCCESS,
+});
+
+export const fetchOrders = () => ({
+	type: actionTypes.FETCH_ORDERS,
+});
+
+export const fetchOrdersFail = () => ({
+	type: actionTypes.FETCH_ORDERS_FAIL,
+});
+
+export const fetchOrdersSuccess = (orders) => ({
+	type: actionTypes.FETCH_ORDERS_SUCCESS,
+	orders,
 });
 
 export const removeFromCart = (workshopId) => ({
