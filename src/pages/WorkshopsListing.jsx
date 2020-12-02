@@ -8,16 +8,38 @@ import '../styles/pages/workshopsListing.css';
 export default function WorkshopsListing() {
 	const dispatch = useDispatch();
 	const workshops = useSelector((state) => state.filteredWorkshops);
+	const productsProp = useSelector((state) => state.products);
+	const totalProp = useSelector((state) => state.total);
 
 	useEffect(() => {
-		const timer = setTimeout(() => {
+		const timerGetWorkshops = setTimeout(() => {
 			return dispatch(actions.fetchWorkshops());
 		});
 
+		const timerPostOrders = setTimeout(() => {
+			let products;
+			let total;
+
+			if (productsProp) {
+				products =
+					productsProp.length > 0 &&
+					productsProp.map((product) => {
+						return product;
+					});
+			}
+
+			if (totalProp) {
+				total = totalProp;
+			}
+
+			dispatch(actions.postOrders(products, total));
+		});
+
 		return () => {
-			clearTimeout(timer);
+			clearTimeout(timerGetWorkshops);
+			clearTimeout(timerPostOrders);
 		};
-	}, [dispatch]);
+	}, [dispatch, productsProp, totalProp]);
 
 	return (
 		<div

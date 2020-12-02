@@ -24,8 +24,5 @@ export {
 	fetchOrdersFail,
 	fetchOrdersSuccess,
 	removeFromCart,
-	loadingWorkshops,
-	loadingUsers,
-	loadingCategories,
-	loadingWorkshop,
+	loadingData,
 } from './tinel.js';

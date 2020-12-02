@@ -114,18 +114,6 @@ export const removeFromCart = (workshopId) => ({
 	workshopId,
 });
 
-export const loadingWorkshops = () => ({
-	type: actionTypes.LOADING_WORKSHOPS,
-});
-
-export const loadingUsers = () => ({
-	type: actionTypes.LOADING_USERS,
-});
-
-export const loadingCategories = () => ({
-	type: actionTypes.LOADING_CATEGORIES,
-});
-
-export const loadingWorkshop = () => ({
-	type: actionTypes.LOADING_WORKSHOP,
+export const loadingData = () => ({
+	type: actionTypes.LOADING_DATA,
 });

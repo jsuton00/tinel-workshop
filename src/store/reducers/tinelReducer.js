@@ -23,30 +23,30 @@ const initialState = {
 	total: 0,
 	updatedProducts: [],
 	updatedTotal: 0,
-	loadingWorkshops: false,
-	loadingUsers: false,
-	loadingCategories: false,
+	loadingData: false,
+	postingData: false,
 	errorFetchingWorkshops: false,
 	errorFetchingUsers: false,
 	errorFetchingCategories: false,
 	errorFetchingWorkshop: false,
+	errorPostingOrders: false,
 };
 
 /** FETCH WORKSHOPS START */
-const setLoadingWorkshops = (state, action) => {
-	return updateObject(state, { loadingWorkshops: true });
+const setLoadingData = (state, action) => {
+	return updateObject(state, { loadingData: true });
 };
 
 const fetchWorkshopsFail = (state, action) => {
 	return updateObject(state, {
-		loadingWorkshops: false,
+		loadingData: false,
 		errorFetchingWorkshops: true,
 	});
 };
 
 const fetchWorkshopsSuccess = (state, action) => {
 	return updateObject(state, {
-		loadingWorkshops: false,
+		loadingData: false,
 		errorFetchingWorkshops: false,
 		workshops: action.workshops,
 		filteredWorkshops: action.workshops,
@@ -55,20 +55,16 @@ const fetchWorkshopsSuccess = (state, action) => {
 /** FETCH WORKSHOPS END */
 
 /** FETCH CATEGORIES START */
-const setLoadingCategories = (state, action) => {
-	return updateObject(state, { loadingCategories: true });
-};
-
 const fetchCategoriesFail = (state, action) => {
 	return updateObject(state, {
-		loadingCategories: false,
+		loadingData: false,
 		errorFetchingCategories: true,
 	});
 };
 
 const fetchCategoriesSuccess = (state, action) => {
 	return updateObject(state, {
-		loadingCategories: false,
+		loadingData: false,
 		errorFetchingCategories: false,
 		categories: action.categories,
 	});
@@ -78,14 +74,14 @@ const fetchCategoriesSuccess = (state, action) => {
 /** FETCH USERS START */
 const fetchUsersFail = (state, action) => {
 	return updateObject(state, {
-		loadingUsers: false,
+		loadingData: false,
 		errorFetchingUsers: true,
 	});
 };
 
 const fetchUsersSuccess = (state, action) => {
 	return updateObject(state, {
-		loadingUsers: false,
+		loadingData: false,
 		errorFetchingUsers: false,
 		users: action.users,
 		selectedUsers: action.users,
@@ -109,7 +105,7 @@ const filterCategory = (state, action) => {
 	return updateObject(state, {
 		filteredWorkshops: categoryWorkshops,
 		selectedCategory: action.category,
-		loadingWorkshops: false,
+		loadingData: false,
 	});
 };
 /** FILTER CATEGORY END */
@@ -117,14 +113,14 @@ const filterCategory = (state, action) => {
 /** FETCH WORKSHOP START */
 const fetchWorkshopFail = (state, action) => {
 	return updateObject(state, {
-		loadingWorkshop: false,
+		loadingData: false,
 		errorFetchingWorkshop: true,
 	});
 };
 
 const fetchWorkshopSuccess = (state, action) => {
 	return updateObject(state, {
-		loadingWorkshop: false,
+		loadingData: false,
 		errorFetchingWorkshop: false,
 		workshop: action.workshop,
 		selectedWorkshop: action.workshop,
@@ -133,7 +129,7 @@ const fetchWorkshopSuccess = (state, action) => {
 /** FETCH WORKSHOP END */
 const fetchUserFail = (state, action) => {
 	return updateObject(state, {
-		loadingUsers: false,
+		loadingData: false,
 		errorFetchingUsers: false,
 	});
 };
@@ -142,7 +138,7 @@ const fetchUserSuccess = (state, action) => {
 	return updateObject(state, {
 		user: action.user,
 		selectedUser: action.user,
-		loadingUsers: false,
+		loadingData: false,
 		errorFetchingUsers: false,
 	});
 };
@@ -169,53 +165,139 @@ const selectNumberOfTickets = (state, action) => {
 	});
 };
 
+/** ADD_TO_CART START */
 const addToCart = (state, action) => {
 	let selectedWorkshopId = action.workshopId;
 	let workshops = state.workshops;
-	let workshop;
-	let existingWorkshop;
+	let selectedWorkshop = state.workshop;
+	let productItem = Object.create(
+		{},
+		workshops.find((w) => w.id === selectedWorkshopId),
+	);
+	let updatedProductItem = Object.create({}, productItem);
+	let newProductItem = Object.create(
+		{},
+		workshops.find((w) => w.id === selectedWorkshopId),
+	);
+	let existingProductItem;
 	let product;
+	let newProduct;
 	let quantity = state.selectedNum;
+	let quantityDefault = 0;
 	let productList = [];
 	let sumTotal = 0;
 	let total = 0;
 
 	if (workshops) {
-		if (quantity === '') {
-			quantity = 1;
-			if (selectedWorkshopId) {
-				workshop = workshops.find((w) => w.id === selectedWorkshopId);
-				product = Object.assign(workshop, { quantity: quantity });
-				productList.push(product);
-				sumTotal = productList.reduce((sum, product) => {
-					return sum + product.price * product.quantity;
-				}, state.total);
-			}
-			return updateObject(state, {
-				products: productList,
-				total: sumTotal,
-			});
-		} else if (quantity >= 1) {
-			if (selectedWorkshopId) {
-				workshop = workshops.find((w) => w.id === selectedWorkshopId);
-				product = Object.assign(workshop, { quantity: quantity });
-				productList.push(product);
-				sumTotal = productList.reduce((sum, product) => {
-					return sum + product.price * product.quantity;
-				}, state.total);
-			}
-		} else {
-			existingWorkshop = workshops.find((w) => w.id === selectedWorkshopId);
-			do {
-				workshop = workshops.find((w) => w.id === selectedWorkshopId);
-				quantity = quantity + 1;
-				product = Object.assign(workshop, { quantity: quantity });
-				if (workshop !== existingWorkshop) {
-					workshop = workshops.find((w) => w.id === selectedWorkshopId);
+		if (selectedWorkshopId) {
+			if (quantity === '') {
+				existingProductItem = workshops.find((item) => {
+					return item.id === selectedWorkshopId;
+				});
+				productItem = workshops.find((w) => {
+					return w.id === selectedWorkshopId;
+				});
+				quantityDefault = 1;
+
+				if (productItem) {
+					product = Object.assign(productItem, { quantity: quantityDefault });
+					productList = product && productList.push(product);
+					sumTotal = productList.reduce((sum, product) => {
+						return sum + product.quantity * product.price;
+					}, 0);
+
+					total = sumTotal;
+
+					return updateObject(state, {
+						products: productList.length > 0 && [...productList],
+						updatedProducts: productList.length > 0 && [...productList],
+						total: total,
+					});
 				}
-			} while (selectedWorkshopId);
+
+				if (productItem && existingProductItem) {
+					if (productItem.id === existingProductItem.id) {
+						quantityDefault += 1;
+						updatedProductItem = Object.assign(productItem, {
+							quantity: quantityDefault,
+						});
+						product = updatedProductItem && updatedProductItem;
+						productList = product && productList.push(product);
+						sumTotal = productList.reduce((sum, product) => {
+							return sum + product.quantity * product.price;
+						}, 0);
+
+						total = sumTotal;
+
+						return updateObject(state, {
+							product: productList.length > 0 && [...productList],
+							updatedProducts: productList.length > 0 && [...productList],
+							total: total,
+							updatedTotal: total,
+							quantity: quantityDefault,
+						});
+					} else {
+						newProductItem = workshops.find((w) => w.id === selectedWorkshopId);
+						quantityDefault = 1;
+						newProduct =
+							newProductItem &&
+							Object.assign(newProductItem, { quantity: quantityDefault });
+						productList =
+							newProduct &&
+							productList.length > 0 &&
+							productList.push(newProduct);
+						sumTotal = productList.reduce((sum, product) => {
+							return sum + product.quantity * product.price;
+						}, 0);
+						total = sumTotal;
+
+						return updateObject(state, {
+							products: productList.length > 0 && productList,
+							updatedProducts: productList.length > 0 && productList,
+							total: total,
+							updatedTotal: total,
+						});
+					}
+				}
+			}
+		}
+	} else if (selectedWorkshop) {
+		if (selectedWorkshopId) {
+			if (selectedWorkshop.id === selectedWorkshopId) {
+				productItem = selectedWorkshop;
+				if (quantity > 0) {
+					product = Object.assign(productItem, { quantity: quantity });
+					productList = product && productList.push(product);
+					sumTotal = productList.reduce((sum, product) => {
+						return sum + product.price * product.quantity;
+					}, 0);
+					total = sumTotal;
+
+					return updateObject(state, {
+						products: [...productList],
+						updatedProducts: [...productList],
+						total: total,
+						updatedTotal: total,
+					});
+				}
+			}
 		}
 	}
+};
+
+const postOrdersFail = (state, action) => {
+	return updateObject(state, {
+		loadingData: false,
+		errorPostingOrders: true,
+		postingData: true,
+	});
+};
+
+const postOrdersSuccess = (state, action) => {
+	return updateObject(state, {
+		loadingData: false,
+		errorPostingOrders: false,
+	});
 };
 
 const reducer = (state = initialState, action) => {
@@ -244,10 +326,14 @@ const reducer = (state = initialState, action) => {
 			return fetchUserSuccess(state, action);
 		case actionTypes.SELECT_NUMBER_OF_TICKETS:
 			return selectNumberOfTickets(state, action);
-		case actionTypes.LOADING_WORKSHOPS:
-			return setLoadingWorkshops(state, action);
-		case actionTypes.LOADING_CATEGORIES:
-			return setLoadingCategories(state, action);
+		case actionTypes.ADD_TO_CART:
+			return addToCart(state, action);
+		case actionTypes.POST_ORDERS_FAIL:
+			return postOrdersFail(state, action);
+		case actionTypes.POST_ORDERS_SUCCESS:
+			return postOrdersSuccess(state, action);
+		case actionTypes.LOADING_DATA:
+			return setLoadingData(state, action);
 		default:
 			return state;
 	}
