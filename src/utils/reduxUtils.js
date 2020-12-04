@@ -4,3 +4,7 @@ export const updateObject = (oldObject, updatedProperties) => {
 		...updatedProperties,
 	};
 };
+
+export const createProduct = (workshop, itemQuantity) => {
+	return Object.assign(workshop, { quantity: itemQuantity });
+};

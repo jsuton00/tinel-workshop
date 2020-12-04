@@ -6,6 +6,7 @@ import * as actionTypes from '../actions/actionTypes';
 const initialState = {
 	workshops: [],
 	filteredWorkshops: [],
+	workshopId: '',
 	workshop: '',
 	selectedWorkshop: '',
 	users: [],
@@ -18,10 +19,10 @@ const initialState = {
 	subtotal: 0,
 	categories: [],
 	selectedCategory: categoriesList[0],
-	products: [],
-	quantity: 0,
+	orders: '',
+	cartItems: [],
 	total: 0,
-	updatedProducts: [],
+	updatedCartList: [],
 	updatedTotal: 0,
 	loadingData: false,
 	postingData: false,
@@ -30,6 +31,7 @@ const initialState = {
 	errorFetchingCategories: false,
 	errorFetchingWorkshop: false,
 	errorPostingOrders: false,
+	errorFetchingOrders: false,
 };
 
 /** FETCH WORKSHOPS START */
@@ -126,6 +128,7 @@ const fetchWorkshopSuccess = (state, action) => {
 		selectedWorkshop: action.workshop,
 	});
 };
+
 /** FETCH WORKSHOP END */
 const fetchUserFail = (state, action) => {
 	return updateObject(state, {
@@ -166,123 +169,38 @@ const selectNumberOfTickets = (state, action) => {
 };
 
 /** ADD_TO_CART START */
-const addToCart = (state, action) => {
-	let selectedWorkshopId = action.workshopId;
-	let workshops = state.workshops;
-	let selectedWorkshop = state.workshop;
-	let productItem = Object.create(
-		{},
-		workshops.find((w) => w.id === selectedWorkshopId),
-	);
-	let updatedProductItem = Object.create({}, productItem);
-	let newProductItem = Object.create(
-		{},
-		workshops.find((w) => w.id === selectedWorkshopId),
-	);
-	let existingProductItem;
-	let product;
-	let newProduct;
-	let quantity = state.selectedNum;
-	let quantityDefault = 0;
-	let productList = [];
-	let sumTotal = 0;
-	let total = 0;
+const selectWorkshopId = (state, action) => {
+	return updateObject(state, {
+		workshopId: action.workshopId,
+		loadingData: false,
+		errorFetchingWorkshop: false,
+	});
+};
 
-	if (workshops) {
-		if (selectedWorkshopId) {
-			if (quantity === '') {
-				existingProductItem = workshops.find((item) => {
-					return item.id === selectedWorkshopId;
-				});
-				productItem = workshops.find((w) => {
-					return w.id === selectedWorkshopId;
-				});
-				quantityDefault = 1;
+const addToCartFail = (state, action) => {
+	return updateObject(state, {
+		loadingData: false,
+		errorFetchingWorkshop: false,
+	});
+};
 
-				if (productItem) {
-					product = Object.assign(productItem, { quantity: quantityDefault });
-					productList = product && productList.push(product);
-					sumTotal = productList.reduce((sum, product) => {
-						return sum + product.quantity * product.price;
-					}, 0);
+const addToCartSuccess = (state, action) => {
+	let cartItems = state.cartItems;
+	let cartItem;
+	let quantity = 0;
 
-					total = sumTotal;
-
-					return updateObject(state, {
-						products: productList.length > 0 && [...productList],
-						updatedProducts: productList.length > 0 && [...productList],
-						total: total,
-					});
-				}
-
-				if (productItem && existingProductItem) {
-					if (productItem.id === existingProductItem.id) {
-						quantityDefault += 1;
-						updatedProductItem = Object.assign(productItem, {
-							quantity: quantityDefault,
-						});
-						product = updatedProductItem && updatedProductItem;
-						productList = product && productList.push(product);
-						sumTotal = productList.reduce((sum, product) => {
-							return sum + product.quantity * product.price;
-						}, 0);
-
-						total = sumTotal;
-
-						return updateObject(state, {
-							product: productList.length > 0 && [...productList],
-							updatedProducts: productList.length > 0 && [...productList],
-							total: total,
-							updatedTotal: total,
-							quantity: quantityDefault,
-						});
-					} else {
-						newProductItem = workshops.find((w) => w.id === selectedWorkshopId);
-						quantityDefault = 1;
-						newProduct =
-							newProductItem &&
-							Object.assign(newProductItem, { quantity: quantityDefault });
-						productList =
-							newProduct &&
-							productList.length > 0 &&
-							productList.push(newProduct);
-						sumTotal = productList.reduce((sum, product) => {
-							return sum + product.quantity * product.price;
-						}, 0);
-						total = sumTotal;
-
-						return updateObject(state, {
-							products: productList.length > 0 && productList,
-							updatedProducts: productList.length > 0 && productList,
-							total: total,
-							updatedTotal: total,
-						});
-					}
-				}
-			}
-		}
-	} else if (selectedWorkshop) {
-		if (selectedWorkshopId) {
-			if (selectedWorkshop.id === selectedWorkshopId) {
-				productItem = selectedWorkshop;
-				if (quantity > 0) {
-					product = Object.assign(productItem, { quantity: quantity });
-					productList = product && productList.push(product);
-					sumTotal = productList.reduce((sum, product) => {
-						return sum + product.price * product.quantity;
-					}, 0);
-					total = sumTotal;
-
-					return updateObject(state, {
-						products: [...productList],
-						updatedProducts: [...productList],
-						total: total,
-						updatedTotal: total,
-					});
-				}
-			}
-		}
+	if (action.workshop.responseData) {
+		cartItem = action.workshop.responseData;
+		quantity += 1;
+		cartItems = [...cartItems, { ...cartItem, quantity: quantity }];
 	}
+
+	return updateObject(state, {
+		cartItems: cartItems,
+		workshopId: action.workshop.workshopId,
+		loadingData: false,
+		errorFetchingWorkshop: false,
+	});
 };
 
 const postOrdersFail = (state, action) => {
@@ -297,6 +215,21 @@ const postOrdersSuccess = (state, action) => {
 	return updateObject(state, {
 		loadingData: false,
 		errorPostingOrders: false,
+	});
+};
+
+const fetchOrdersFail = (state, action) => {
+	return updateObject(state, {
+		loadingData: false,
+		errorFetchingOrders: true,
+	});
+};
+
+const fetchOrdersSuccess = (state, action) => {
+	return updateObject(state, {
+		loadingData: false,
+		errorFetchingOrders: false,
+		orders: action.orders,
 	});
 };
 
@@ -326,12 +259,20 @@ const reducer = (state = initialState, action) => {
 			return fetchUserSuccess(state, action);
 		case actionTypes.SELECT_NUMBER_OF_TICKETS:
 			return selectNumberOfTickets(state, action);
-		case actionTypes.ADD_TO_CART:
-			return addToCart(state, action);
+		case actionTypes.SELECT_WORKSHOP_ID:
+			return selectWorkshopId(state, action);
+		case actionTypes.ADD_TO_CART_FAIL:
+			return addToCartFail(state, action);
+		case actionTypes.ADD_TO_CART_SUCCESS:
+			return addToCartSuccess(state, action);
 		case actionTypes.POST_ORDERS_FAIL:
 			return postOrdersFail(state, action);
 		case actionTypes.POST_ORDERS_SUCCESS:
 			return postOrdersSuccess(state, action);
+		case actionTypes.FETCH_ORDERS_FAIL:
+			return fetchOrdersFail(state, action);
+		case actionTypes.FETCH_ORDERS_SUCCESS:
+			return fetchOrdersSuccess(state, action);
 		case actionTypes.LOADING_DATA:
 			return setLoadingData(state, action);
 		default:

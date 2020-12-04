@@ -45,6 +45,24 @@ export function* fetchWorkshopSaga(action) {
 	}
 }
 
+export function* addToCartSaga(action) {
+	try {
+		yield put(actions.loadingData());
+		let response;
+		if (action.workshopId) {
+			response = yield call(api.fetchWorkshop, action.workshopId);
+			yield put(
+				actions.addToCartSuccess({
+					workshopId: action.workshopId,
+					responseData: response.data,
+				}),
+			);
+		}
+	} catch (error) {
+		yield put(actions.addToCartFail());
+	}
+}
+
 export function* fetchUserSaga(action) {
 	try {
 		yield put(actions.loadingData());
@@ -58,20 +76,12 @@ export function* fetchUserSaga(action) {
 	}
 }
 
-export function* postOrdersSaga(action) {
+export function* fetchOrdersSaga(action) {
 	try {
 		yield put(actions.loadingData());
-		let response;
-		let products = action.products;
-		let total = action.total;
-
-		if (products && total) {
-			if (products.length > 0) {
-				response = yield call(api.postOrders(products, total));
-				yield put(actions.postOrdersSuccess(console.log(response)));
-			}
-		}
+		const response = yield call(api.fetchOrders);
+		yield put(actions.fetchOrdersSuccess(response.data));
 	} catch (err) {
-		yield put(actions.postOrdersFail());
+		yield put(actions.fetchOrdersFail());
 	}
 }

@@ -16,11 +16,10 @@ export const fetchOrders = async () => {
 	return await axios.get('http://localhost:5000/orders');
 };
 
-export const postOrders = async (products, total) => {
-	return await axios.post('http://localhost:5000/orders', {
-		products: [...products],
-		total: total,
-	});
+export const postOrder = async (cartItem, itemQuantity) => {
+	return await axios.post('http://localhost:5000/orders', [
+		{ cartItem, ...cartItem, itemQuantity },
+	]);
 };
 
 export const fetchWorkshop = async (id) => {

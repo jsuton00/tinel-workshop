@@ -77,9 +77,23 @@ export const selectNumberOfTickets = (numValue) => ({
 	numValue,
 });
 
+export const selectWorkshopId = (workshopId) => ({
+	type: actionTypes.SELECT_WORKSHOP_ID,
+	workshopId,
+});
+
 export const addToCart = (workshopId) => ({
 	type: actionTypes.ADD_TO_CART,
 	workshopId,
+});
+
+export const addToCartFail = () => ({
+	type: actionTypes.ADD_TO_CART_FAIL,
+});
+
+export const addToCartSuccess = (workshop) => ({
+	type: actionTypes.ADD_TO_CART_SUCCESS,
+	workshop,
 });
 
 export const postOrders = (products, total) => ({

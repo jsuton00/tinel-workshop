@@ -6,7 +6,7 @@ import {
 	fetchCategoriesSaga,
 	fetchWorkshopSaga,
 	fetchUserSaga,
-	postOrdersSaga,
+	addToCartSaga,
 } from './tinelSagas';
 
 export function* watchTinel() {
@@ -15,7 +15,7 @@ export function* watchTinel() {
 		takeLatest(actionTypes.FETCH_USERS, fetchUsersSaga),
 		takeEvery(actionTypes.FETCH_CATEGORIES, fetchCategoriesSaga),
 		takeEvery(actionTypes.FETCH_WORKSHOP, fetchWorkshopSaga),
+		takeEvery(actionTypes.ADD_TO_CART, addToCartSaga),
 		takeLatest(actionTypes.FETCH_USER, fetchUserSaga),
-		takeLatest(actionTypes.POST_ORDERS, postOrdersSaga),
 	]);
 }

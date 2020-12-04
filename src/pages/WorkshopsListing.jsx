@@ -8,38 +8,20 @@ import '../styles/pages/workshopsListing.css';
 export default function WorkshopsListing() {
 	const dispatch = useDispatch();
 	const workshops = useSelector((state) => state.filteredWorkshops);
-	const productsProp = useSelector((state) => state.products);
-	const totalProp = useSelector((state) => state.total);
+	const workshopId = useSelector((state) => state.workshopId);
 
 	useEffect(() => {
-		const timerGetWorkshops = setTimeout(() => {
-			return dispatch(actions.fetchWorkshops());
-		});
-
-		const timerPostOrders = setTimeout(() => {
-			let products;
-			let total;
-
-			if (productsProp) {
-				products =
-					productsProp.length > 0 &&
-					productsProp.map((product) => {
-						return product;
-					});
+		const timer = setTimeout(() => {
+			dispatch(actions.fetchWorkshops());
+			if (workshopId) {
+				dispatch(actions.addToCart(workshopId));
 			}
-
-			if (totalProp) {
-				total = totalProp;
-			}
-
-			dispatch(actions.postOrders(products, total));
 		});
 
 		return () => {
-			clearTimeout(timerGetWorkshops);
-			clearTimeout(timerPostOrders);
+			clearTimeout(timer);
 		};
-	}, [dispatch, productsProp, totalProp]);
+	}, [dispatch, workshopId]);
 
 	return (
 		<div
@@ -72,6 +54,9 @@ export default function WorkshopsListing() {
 												key={index}
 												workshopId={workshop.id}
 												workshop={workshop}
+												addToCart={() =>
+													dispatch(actions.selectWorkshopId(workshop.id))
+												}
 											/>
 										);
 									})

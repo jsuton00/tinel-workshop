@@ -1,6 +1,4 @@
-import React, { useEffect, useRef } from 'react';
-import * as actions from '../store/actions/index';
-import { useDispatch } from 'react-redux';
+import React from 'react';
 import { CalendarIcon, CardCategoryIcon, ClockIcon } from './Images';
 import { formatDates, formatTime } from '../utils/formatDates';
 import { formatPrice } from '../utils/formatNumber';
@@ -9,29 +7,11 @@ import '../styles/components/workshopCards.css';
 import { Link } from 'react-router-dom';
 
 export const WorkShopCards = (props) => {
-	const { workshopId, workshop } = props;
+	const { workshopId, workshop, addToCart } = props;
 	console.log(workshop);
 
-	const cardRef = useRef();
-	const dispatch = useDispatch();
-
-	useEffect(() => {
-		const timer = setTimeout(() => {
-			if (workshopId === cardRef.current.value) {
-				if (workshop) {
-					if (workshopId === workshop.id) {
-						dispatch(actions.addToCart(workshopId));
-					}
-				}
-			}
-		}, 100);
-		return () => {
-			clearTimeout(timer);
-		};
-	}, [dispatch, workshop, workshopId]);
-
 	return (
-		<div ref={cardRef} className="workshop-card card">
+		<div className="workshop-card card">
 			<div className="card-img-container card-img-top">
 				<img
 					src={workshop.imageUrl}
@@ -76,7 +56,7 @@ export const WorkShopCards = (props) => {
 						type="button"
 						className="add-to-cart-button button"
 						value={workshopId}
-						onClick={(e) => dispatch(actions.addToCart(e.target.value))}
+						onClick={(e) => addToCart(e.target.value)}
 					>
 						Add to Cart
 					</button>
