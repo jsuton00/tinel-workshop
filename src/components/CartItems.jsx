@@ -3,6 +3,7 @@ import * as actions from '../store/actions/index';
 import { useDispatch, useSelector } from 'react-redux';
 import { inputNumberList } from '../utils/inputNumberList';
 import { Link } from 'react-router-dom';
+import { formatPrice } from '../utils/formatNumber';
 
 export default function CartItems(props) {
 	const { itemId, cartItem } = props;
@@ -33,7 +34,7 @@ export default function CartItems(props) {
 								{cartItem.title}
 							</h5>
 						</Link>
-						<div className="cart-item-price card-text">
+						<div className="cart-item-price-row card-text row">
 							<div className="quantity-control">
 								<select
 									id="ticketNumber"
@@ -42,8 +43,11 @@ export default function CartItems(props) {
 									className="number-picker-input"
 									value={selectNum}
 									defaultValue={cartItem.quantity}
-									onChange={(e) =>
-										dispatch(actions.selectNumberOfTickets(e.target.value))
+									onChange={
+										(e) =>
+											dispatch(actions.selectNumberOfTickets(e.target.value))
+										//dispatch action quantity
+										//selectNum, id
 									}
 								>
 									{inputNumberList.length > 0 &&
@@ -56,6 +60,9 @@ export default function CartItems(props) {
 										})}
 								</select>
 							</div>
+							<p className="cart-item-price">
+								{`${formatPrice(cartItem.price)} €`}
+							</p>
 						</div>
 					</div>
 				</div>

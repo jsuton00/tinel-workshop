@@ -20,6 +20,7 @@ export {
 	addToCart,
 	addToCartFail,
 	addToCartSuccess,
+	updateQuantity,
 	postOrders,
 	postOrdersFail,
 	postOrdersSuccess,

@@ -6,10 +6,12 @@ import '../styles/components/header.css';
 import { Link } from 'react-router-dom';
 import ShoppingCart from '../pages/CartInterface';
 
-export default function Header() {
+export default function Header(props) {
+	const { checkout, openCheckout } = props;
 	const cartList = useSelector((state) => state.cartList);
 
 	const [cartMenu, setCartMenu] = useState(false);
+
 	const openShoppingCart = () => {
 		setCartMenu(!cartMenu);
 	};
@@ -42,6 +44,8 @@ export default function Header() {
 				<ShoppingCart
 					closeButtonValue={cartMenu}
 					closeCart={closeShoppingCart}
+					checkoutValue={checkout}
+					openCheckout={openCheckout}
 				/>
 			) : (
 				''

@@ -82,11 +82,22 @@ export const selectWorkshopId = (workshopId) => ({
 	workshopId,
 });
 
-export const addToCart = (workshopId) => ({
+export const addToCart = (workshopId, defaultQuantity = 1) => ({
 	type: actionTypes.ADD_TO_CART,
 	workshopId,
+	//itemQuantity,
+	defaultQuantity: defaultQuantity,
 });
 
+export const updateQuantity = (itemId, numValue) => ({
+	type: actionTypes.UPDATE_PRODUCT_QUANTITY,
+	itemId,
+	numValue,
+});
+
+// updateQuantity - > id, num
+// nac ces id proizvoda u objektu cartItems find id, for
+// itemQuantity = action.num ili state.num
 export const addToCartFail = () => ({
 	type: actionTypes.ADD_TO_CART_FAIL,
 });

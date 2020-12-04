@@ -15,12 +15,14 @@ const initialState = {
 	selectedUser: '',
 	numValue: inputNumberList[0],
 	price: 0,
-	selectedNum: 0,
+	selectedNum: '',
 	subtotal: 0,
 	categories: [],
 	selectedCategory: categoriesList[0],
 	orders: '',
 	cartItems: [],
+	itemQuantity: 0,
+	itemQuantityValue: inputNumberList[0],
 	total: 0,
 	updatedCartList: [],
 	updatedTotal: 0,
@@ -187,22 +189,71 @@ const addToCartFail = (state, action) => {
 const addToCartSuccess = (state, action) => {
 	let cartItems = state.cartItems;
 	let cartItem;
-	let quantity = 0;
+	let workshop = state.workshop;
+	let quantity = state.itemQuantity;
+	let total;
 
 	if (action.workshop.responseData) {
 		cartItem = action.workshop.responseData;
-		quantity += 1;
-		cartItems = [...cartItems, { ...cartItem, quantity: quantity }];
+		if (!action.workshop.quantity) {
+			quantity = action.workshop.defaultQuantity;
+			cartItems = [...cartItems, { ...cartItem, quantity: quantity }];
+			total = cartItems.reduce(
+				(sum, item) => sum + item.quantity * item.price,
+				0,
+			);
+		}
+	}
+
+	if (workshop) {
+		cartItem = workshop;
+		if (action.workshop.itemQuantity) {
+			quantity = action.workshop.itemQuantity;
+			cartItems = [...cartItems, { ...cartItem, quantity: quantity }];
+			total = cartItems.reduce(
+				(sum, item) => sum + item.quantity * item.price,
+				0,
+			);
+		}
 	}
 
 	return updateObject(state, {
 		cartItems: cartItems,
 		workshopId: action.workshop.workshopId,
+		itemQuantity: quantity,
+		total: total,
 		loadingData: false,
 		errorFetchingWorkshop: false,
 	});
 };
 
+const updateQuantity = (state, action) => {
+	let inputNumberValue = Number(action.numValue);
+	let selectWorkshopId = action.workshopId;
+	let upDateCartItems = [];
+	let item;
+	let cartItems = state.cartItems;
+	let total;
+
+	item = cartItems.find((item) => item.id === selectWorkshopId);
+	upDateCartItems = cartItems.filter((item) => item.id !== selectWorkshopId);
+
+	item.quantity = inputNumberValue;
+
+	upDateCartItems.push(item);
+	total = upDateCartItems.reduce(
+		(sum, item) => sum + item.quantity * item.quantity,
+		0,
+	);
+
+	return updateObject(state, {
+		cartItems: upDateCartItems,
+		updatedCartList: upDateCartItems,
+		itemQuantity: inputNumberValue,
+		selectWorkshopId: selectWorkshopId,
+		total: total,
+	});
+};
 const postOrdersFail = (state, action) => {
 	return updateObject(state, {
 		loadingData: false,
@@ -265,6 +316,8 @@ const reducer = (state = initialState, action) => {
 			return addToCartFail(state, action);
 		case actionTypes.ADD_TO_CART_SUCCESS:
 			return addToCartSuccess(state, action);
+		case actionTypes.UPDATE_PRODUCT_QUANTITY:
+			return updateQuantity(state, action);
 		case actionTypes.POST_ORDERS_FAIL:
 			return postOrdersFail(state, action);
 		case actionTypes.POST_ORDERS_SUCCESS:

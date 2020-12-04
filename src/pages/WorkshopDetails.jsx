@@ -7,6 +7,7 @@ import * as actions from '../store/actions/index';
 import { FaLongArrowAltLeft } from 'react-icons/fa';
 import '../styles/pages/workshopDetails.css';
 import { useHistory } from 'react-router';
+import { formatPrice } from '../utils/formatNumber';
 
 const WorkshopDetails = (props) => {
 	let { location } = props;
@@ -14,6 +15,8 @@ const WorkshopDetails = (props) => {
 	const dispatch = useDispatch();
 	const workshop = useSelector((state) => state.selectedWorkshop);
 	const selectedUser = useSelector((state) => state.selectedUser);
+	const selectWorkshopId = useSelector((state) => state.selectWorkshopId);
+	const selectedNum = useSelector((state) => state.selectedNum);
 	let workshopId = location.workshopId;
 
 	useEffect(() => {
@@ -22,11 +25,16 @@ const WorkshopDetails = (props) => {
 			if (workshop) {
 				dispatch(actions.fetchUser(workshop.userId));
 			}
+		});
+
+		const timerAddToCart = setTimeout(() => {
+			dispatch(actions.addToCart(selectWorkshopId, selectedNum));
 		}, 100);
 		return () => {
 			clearTimeout(timer);
+			clearTimeout(timerAddToCart);
 		};
-	}, [dispatch, workshop, workshopId]);
+	}, [dispatch, selectWorkshopId, selectedNum, workshop, workshopId]);
 
 	return (
 		<div
@@ -70,7 +78,25 @@ const WorkshopDetails = (props) => {
 								date={workshop.date}
 							/>
 						)}
-						{workshop && <BookingForm price={workshop.price} />}
+						<div id="booking-form-box" className="booking-form-box">
+							<div className="booking-form-body">
+								<h3 className="booking-form-tag row">Buy Your Ticket</h3>
+								<p className="booking-form-price row">
+									{workshop && `${formatPrice(workshop.price)} €`}
+								</p>
+								{workshop && (
+									<BookingForm
+										workshopId={workshop.id}
+										buttonValue={workshop.id}
+										selectedQuantity={selectedNum}
+										selectQuantity={() =>
+											dispatch(actions.selectNumberOfTickets(selectedNum))
+										}
+										addToCart={() => dispatch(actions.addToCart(workshop.id))}
+									/>
+								)}
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

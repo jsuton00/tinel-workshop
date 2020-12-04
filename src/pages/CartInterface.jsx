@@ -4,12 +4,15 @@ import CartList from '../components/CartList';
 import { ShoppingCartIcon } from '../components/Images';
 import * as actions from '../store/actions/index';
 import '../styles/pages/cartInterface.css';
+import { formatSubtotal } from '../utils/formatNumber';
+import CheckoutPage from './CheckoutPage';
 
 export default function ShoppingCart(props) {
-	const { closeButtonValue, closeCart } = props;
+	const { closeButtonValue, closeCart, checkoutValue, openCheckout } = props;
 
 	const dispatch = useDispatch();
 	const cartItems = useSelector((state) => state.cartItems);
+	const total = useSelector((state) => state.total);
 
 	useEffect(() => {
 		const timer = setTimeout(() => {
@@ -20,6 +23,15 @@ export default function ShoppingCart(props) {
 			clearTimeout(timer);
 		};
 	}, [dispatch]);
+
+	const handleCloseCart = (e) => {
+		return closeCart(e.target.value);
+	};
+
+	const handleOpenCheckOut = (e) => {
+		openCheckout(e.target.value);
+		closeCart(closeButtonValue);
+	};
 	return (
 		<div id="shopping-cart" className="shopping-cart container-fluid">
 			<div className="shopping-cart-body">
@@ -43,7 +55,7 @@ export default function ShoppingCart(props) {
 							type="button"
 							className="close-button"
 							value={closeButtonValue}
-							onClick={(e) => closeCart(e.target.value)}
+							onClick={handleCloseCart}
 						>
 							X
 						</button>
@@ -54,12 +66,20 @@ export default function ShoppingCart(props) {
 						{cartItems && <CartList cartItems={cartItems} />}
 					</div>
 				</div>
+				<div className="shopping-cart-total-section">
+					<h5 className="shopping-cart-total-title row">Subtotal</h5>
+					<p className="shopping-cart-total-number row">
+						{total > 0 ? `${formatSubtotal(total)} €` : `${0} €`}
+					</p>
+				</div>
 				<div className="checkout-button-row row">
 					<button
 						id="checkout-button"
 						name="checkout-button"
 						type="button"
 						className="checkout-button"
+						value={checkoutValue}
+						onClick={handleOpenCheckOut}
 					>
 						Checkout
 					</button>

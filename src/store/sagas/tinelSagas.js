@@ -50,13 +50,25 @@ export function* addToCartSaga(action) {
 		yield put(actions.loadingData());
 		let response;
 		if (action.workshopId) {
-			response = yield call(api.fetchWorkshop, action.workshopId);
-			yield put(
-				actions.addToCartSuccess({
-					workshopId: action.workshopId,
-					responseData: response.data,
-				}),
-			);
+			if (!action.itemQuantity) {
+				response = yield call(api.fetchWorkshop, action.workshopId);
+				yield put(
+					actions.addToCartSuccess({
+						workshopId: action.workshopId,
+						responseData: response.data,
+						defaultQuantity: action.defaultQuantity,
+					}),
+				);
+			} else {
+				response = yield call(api.fetchWorkshop, action.workshopId);
+				yield put(
+					actions.addToCartSuccess({
+						workshopId: action.workshopId,
+						responseData: response.data,
+						itemQuantity: action.itemQuantity,
+					}),
+				);
+			}
 		}
 	} catch (error) {
 		yield put(actions.addToCartFail());
